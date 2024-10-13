@@ -44,46 +44,5 @@ timeFormat      general;
 timePrecision   6;
 
 runTimeModifiable true;
-functions {
-
-forces1
-{
-    // Mandatory entries
-    type            forces;
-    libs            ("libforces.so");
-    patches         (box);
-
-
-    // Optional entries
-
-    // Field names
-    p               p;
-    U               U;
-    rho             rho;
-    rho         rhoInf;
-    rhoInf      1;
-
-    // Reference pressure [Pa]
-    pRef            1e5;
-
-    // Include porosity effects?
-    porosity        no;
-
-    // Store and write volume field representations of forces and moments
-    //writeFields     yes;
-
-    // Centre of rotation for moment calculations
-    CofR            (0.05 0.05 0.00);
-
-    // Spatial data binning
-    // - extents given by the bounds of the input geometry
-    //binData
-    //{
-    //    nBin        20;
-    //    direction   (1 0 0);
-    //    cumulative  yes;
-    //}
-}
-}
 
 // ************************************************************************* //
