@@ -1,0 +1,108 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#includeEtc "caseDicts/mesh/generation/snappyHexMeshDict.cfg"
+
+castellatedMesh on;
+snap            on;
+addLayers       off;
+
+geometry
+{
+    cylinderAMI
+	{
+	    type            searchableCylinder;
+	    point1          (0.05 0.05 -0.01);
+	    point2          (0.05 0.05 0.01);
+	    radius          0.03;
+	}    
+    box
+	{
+	    type            searchableBox;
+	    min             (0.045 0.04 -0.01);
+	    max             (0.055 0.06 0.01);
+	}
+};
+
+castellatedMeshControls
+{
+    refinementSurfaces
+    {
+        cylinderAMI
+        {
+            level (0 0);
+	    faceType boundary;
+            cellZone rotatingZone;
+            faceZone rotatingZone;
+            cellZoneInside inside;
+        }
+	box
+	{
+	    level (0 0);
+	}
+    }
+
+    refinementRegions
+    {
+        // Note: for better mesh quality utilize this refinement region
+        // AMI{ mode inside; levels ((1E15 3));}
+    }
+
+    locationInMesh (1e-5 1e-5 1e-5); // Offset from (0 0 0) to avoid
+                                     // coinciding with face or edge
+    nCellsBetweenLevels 3;
+}
+
+snapControls
+{
+//  explicitFeatureSnap    true;
+//  implicitFeatureSnap    false;
+}
+
+addLayersControls
+{
+//    layers
+//    {
+//        "CAD.*"
+//        {
+//            nSurfaceLayers 2;
+//        }
+//    }
+//
+//    relativeSizes       true; // false, usually with firstLayerThickness
+//    expansionRatio      1.2;
+//    finalLayerThickness 0.5;
+//    minThickness        1e-3;
+////  firstLayerThickness 0.01;
+//
+////  maxThicknessToMedialRatio 0.6;
+}
+
+meshQualityControls
+{
+//    minTetQuality -1e+30;
+}
+
+writeFlags
+(
+//    scalarLevels
+    layerSets
+    layerFields
+);
+
+mergeTolerance 1e-6;
+
+// ************************************************************************* //

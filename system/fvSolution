@@ -1,0 +1,126 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.2                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    pcorr
+    {
+        solver          GAMG;
+        smoother        GaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        cacheAgglomeration off;
+        agglomerator    faceAreaPair;
+        nCellsInCoarsestLevel 10;
+        mergeLevels      1;
+
+        tolerance        0.02;
+        relTol           0;
+    }
+
+    p
+    {
+        $pcorr;
+        tolerance       1e-06;
+        relTol          0.01;
+    }
+
+
+
+    pcorrFinal
+    {
+        $pcorr
+        tolerance       1e-06;
+        relTol          0;
+    }
+
+
+
+
+    pFinal
+    {
+        $p;
+        tolerance       1e-06;
+        relTol          0;
+    }
+
+    "(U|k|epsilon|R|nuTilda)"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-05;
+        relTol          0.1;
+    }
+
+    "(U|k|epsilon)Final"
+    {
+        $U;
+        tolerance       1e-06;
+        relTol          0;
+    }
+
+//    cellMotionUx
+//    {
+//        solver          PCG;
+//        preconditioner  DIC;
+//        tolerance       1e-08;
+//        relTol          0;
+//    }
+
+    cellDisplacement
+    {
+        solver          GAMG;
+        tolerance       1e-5;
+        relTol          0;
+        smoother        GaussSeidel;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+    }
+}
+
+PIMPLE
+{
+    momentumPredictor no;
+
+    nOuterCorrectors 1;
+    nCorrectors      3;
+    nNonOrthogonalCorrectors 1;
+
+    correctPhi      yes;
+    moveMeshOuterCorrectors yes;
+    turbOnFinalIterOnly yes;
+
+    pRefCell            0;
+    pRefValue           1e5;
+}
+
+relaxationFactors
+{
+    fields
+    {
+    }
+    equations
+    {
+	p		0.3;
+        "(U|k|epsilon)"   0.7;
+        "(U|k|epsilon)Final" 1.0;
+    }
+}
+
+// ************************************************************************* //
