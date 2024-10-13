@@ -73,7 +73,7 @@ forces1
     //writeFields     yes;
 
     // Centre of rotation for moment calculations
-    CofR            (0.005 0.005 0.00);
+    CofR            (0.05 0.05 0.00);
 
     // Spatial data binning
     // - extents given by the bounds of the input geometry
